@@ -251,8 +251,6 @@ class Bitbull_Tooso_Model_Indexer
 
             $attributes = explode(",", Mage::getStoreConfig(self::XML_PATH_INDEXER_ATTRIBUTES_SIMPLE));
             if(sizeof($attributes) > 0){
-                $this->_logger->debug("Indexer: using additional additional properties for product simple: ".print_r($attributes, true));
-
                 $variantsCollection = Mage::getResourceModel('catalog/product_type_configurable_product_collection')
                     ->setProductFilter($product);
 
@@ -262,7 +260,6 @@ class Bitbull_Tooso_Model_Indexer
                     $attributeCode = $attribute->getAttributeCode();
                     $attributesTypes[$attributeCode] = $attribute->getFrontendInput();
                     $variantsCollection->addAttributeToSelect($attributeCode, 'left');
-                    $this->_logger->debug("Indexer: simple product additional config attribute ".$attributeCode." loaded ");
                 }
 
                 $preserveAttributeValue = $this->_indexerHelper->getPreservedAttributeType();
@@ -272,7 +269,6 @@ class Bitbull_Tooso_Model_Indexer
                     $sku = $variant->getSku();
 
                     foreach ($attributes as $attributeCode) {
-                        $this->_logger->debug("Indexer: simple product additional config ".$attributeCode." for ".$sku);
                         if($attributesTypes[$attributeCode] === 'select' && !in_array($attributeCode, $preserveAttributeValue)){
                             $variants[$sku][$attributeCode] = $variant->getAttributeText($attributeCode);
                         }else{
@@ -280,14 +276,6 @@ class Bitbull_Tooso_Model_Indexer
                         }
                     }
                 }
-            }else{
-                $configValue = Mage::getStoreConfig(self::XML_PATH_INDEXER_ATTRIBUTES_SIMPLE);
-                if($configValue == ''){
-                    $this->_logger->debug("Indexer: no additional configuration for product simple properties export");
-                }else{
-                    $this->_logger->debug("Indexer: invalid configuration for product simple properties export: ".$configValue);
-                }
-
             }
 
         }
